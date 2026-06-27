@@ -1,76 +1,113 @@
-# SmartJSON
+# SmartJSON — Free AI-Powered JSON Formatter, Validator & Error Explainer
 
-AI-powered JSON Formatter, Validator, and Error Explainer — runs entirely in your browser.
+> Format, minify, and validate JSON instantly. Broken JSON? AI explains exactly what's wrong in plain English and gives you the corrected version.
 
-**Live demo:** `https://muhmdfarhan0.github.io/smartjson/`
+**🔗 Live tool:** [muhmdfarhan0.github.io/smartjson](https://muhmdfarhan0.github.io/smartjson/)
+
+---
+
+## What is SmartJSON?
+
+SmartJSON is a free, browser-based JSON tool that combines instant formatting and validation with AI-powered error explanation. No login required, no data stored on any server — everything runs in your browser.
+
+It's built for developers who are tired of cryptic `Unexpected token` errors and just want to know what's actually wrong with their JSON.
 
 ---
 
 ## Features
 
-- **Format & Validate** — pretty-prints JSON with 2-space indentation and syntax highlighting
-- **Minify** — collapses JSON to a single line
-- **Line numbers** on both input and output panels
-- **Green / red badge** — instant valid/invalid status with exact error message
-- **AI Explain** — sends your broken JSON + error to Groq (LLaMA 3.3 70B) and gets a plain-English explanation plus the corrected JSON
-- **Copy to clipboard** — one click to copy the formatted output
-- **Dark theme** — GitHub-style dark UI, monospace font
-- Works on mobile (panels stack vertically)
-- `Ctrl+Enter` keyboard shortcut to format
+| Feature | Description |
+|---|---|
+| **Format & Validate** | Pretty-prints JSON with 2-space indentation and syntax highlighting |
+| **Minify** | Collapses JSON to a single compact line |
+| **Instant Validation** | Green ✓ badge for valid JSON, red ✕ badge with the exact error message |
+| **AI Explain** | Sends broken JSON to Groq LLaMA 3.3 70B — explains the error in plain English and shows the fix |
+| **Line Numbers** | Synchronized line numbers on both input and output panels |
+| **Copy to Clipboard** | One-click copy of the formatted/minified output |
+| **Keyboard Shortcut** | `Ctrl+Enter` to format instantly |
+| **Mobile Friendly** | Panels stack vertically on small screens |
 
 ---
 
-## Setup
+## Getting Started
 
-### 1. Deploy to GitHub Pages
+### 1. Open the tool
 
-1. Fork or clone this repo
-2. Go to **Settings → Pages**
-3. Set source to **Deploy from a branch → main → / (root)**
-4. Your app is live at `https://muhmdfarhan0.github.io/smartjson/`
+Go to **[muhmdfarhan0.github.io/smartjson](https://muhmdfarhan0.github.io/smartjson/)**
 
-No build step. No dependencies to install. Just one `index.html`.
+No installation. No build step. No account needed.
 
-### 2. Add your Groq API Key
+### 2. Add your Groq API key (for AI Explain)
 
-The AI Explain feature requires a free Groq API key.
+The AI error explanation feature uses Groq's free API.
 
-1. Get one at [console.groq.com](https://console.groq.com) — it's free
-2. Open the app, click **⚙ API Key** in the top-right corner
+1. Get a free key at [console.groq.com](https://console.groq.com) — no credit card needed
+2. Click **⚙ API Key** in the top navigation
 3. Paste your key (starts with `gsk_`) and click **Save**
 
-Your key is stored in `localStorage` and **only ever sent to `api.groq.com`**. It is never logged, tracked, or sent anywhere else. It stays in your browser.
-
-> **Never commit your API key to the repo.** The settings input is intentionally in the UI, not in code.
+Your key is saved in your browser's `localStorage` only. It is never sent to any server other than `api.groq.com`.
 
 ---
 
-## Usage
+## How to Use
 
-| Action | How |
-|---|---|
-| Format JSON | Paste → **Format & Validate** or `Ctrl+Enter` |
-| Minify JSON | Paste → **⊡ Minify** |
-| Explain an error | Format broken JSON → click **✦ AI Explain** |
-| Copy output | Click **⎘ Copy** after formatting |
-| Clear everything | Click **✕ Clear** |
+```
+1. Paste JSON into the left (Input) panel
+2. Click "▶ Format & Validate"  OR press Ctrl+Enter
+3. ✓ Valid JSON  → See formatted output with syntax highlighting on the right
+   ✕ Invalid JSON → See red error badge with the exact error location
+4. For broken JSON, click "✦ AI Explain" to get a plain-English explanation + corrected JSON
+```
+
+---
+
+## Example: Broken JSON
+
+```json
+{
+  "user": {
+    "name": "Alice"
+    "age": 30,
+    "active": True
+  }
+}
+```
+
+**SmartJSON catches:**
+- Missing comma after `"Alice"` on line 3
+- `True` should be `true` (JSON is case-sensitive)
+
+**AI Explain output:** *"The JSON is missing a comma after the `name` field on line 3, and `True` must be lowercase `true` in JSON syntax. Here is the corrected version: ..."*
+
+---
+
+## Deploy Your Own
+
+1. Fork this repo
+2. Go to **Settings → Pages → Deploy from branch → main → / (root)**
+3. Live in ~60 seconds at `https://<your-username>.github.io/smartjson`
 
 ---
 
 ## Tech Stack
 
-| What | Details |
-|---|---|
-| UI | Pure HTML + CSS + Vanilla JS — no frameworks |
-| Syntax highlighting | [highlight.js](https://highlightjs.org/) via CDN |
-| AI | [Groq API](https://console.groq.com) — LLaMA 3.3 70B Versatile |
-| Hosting | GitHub Pages (static, no server needed) |
-| Fonts | JetBrains Mono via Google Fonts |
+- **Frontend:** Pure HTML + CSS + Vanilla JavaScript — zero dependencies, no build step
+- **Syntax highlighting:** [highlight.js](https://highlightjs.org/) via CDN
+- **AI:** [Groq API](https://console.groq.com) — LLaMA 3.3 70B Versatile (fast inference)
+- **Fonts:** Playfair Display + Inter via Google Fonts
+- **Hosting:** GitHub Pages
 
 ---
 
 ## Privacy
 
-- No analytics, no tracking, no cookies
-- Your JSON never leaves your browser (except when you click AI Explain, which sends it to Groq)
-- API key stored only in your browser's localStorage
+- No analytics or tracking of any kind
+- Your JSON is never stored or logged
+- API key lives only in your browser's `localStorage`
+- The only external call is to `api.groq.com` when you click AI Explain
+
+---
+
+## Keywords
+
+`json formatter` · `json validator` · `json beautifier` · `json minifier` · `json error explainer` · `ai developer tools` · `groq` · `llama` · `online json tool` · `free json formatter`
