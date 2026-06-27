@@ -2,7 +2,7 @@
 
 AI-powered JSON Formatter, Validator, and Error Explainer — runs entirely in your browser.
 
-**Live demo:** `https://<your-username>.github.io/smartjson`
+**Live demo:** `https://muhmdfarhan0.github.io/smartjson/`
 
 ---
 
@@ -27,7 +27,7 @@ AI-powered JSON Formatter, Validator, and Error Explainer — runs entirely in y
 1. Fork or clone this repo
 2. Go to **Settings → Pages**
 3. Set source to **Deploy from a branch → main → / (root)**
-4. Your app is live at `https://<your-username>.github.io/<repo-name>`
+4. Your app is live at `https://muhmdfarhan0.github.io/smartjson/`
 
 No build step. No dependencies to install. Just one `index.html`.
 
