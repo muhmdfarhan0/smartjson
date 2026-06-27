@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartJSON — AI-Powered JSON Formatter & Validator</title>
+
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Fonts: Playfair Display (serif title) + Inter (UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:      #f4f0e6;
+      --cream-dark: #ebe5d8;
+      --white:      #ffffff;
+      --border:     #ddd8ce;
+      --border-med: #c8c2b8;
+      --text:       #111111;
+      --muted:      #6b6460;
+      --blue:       #0068d9;
+      --blue-light: #e8f0fe;
+      --blue-hover: #0055b3;
+      --green:      #15803d;
+      --green-bg:   #dcfce7;
+      --green-bdr:  #86efac;
+      --red:        #b91c1c;
+      --red-bg:     #fee2e2;
+      --red-bdr:    #fca5a5;
+      --purple:     #6d28d9;
+      --purple-bg:  #ede9fe;
+      --purple-bdr: #c4b5fd;
+      --font-ui:    'Inter', system-ui, sans-serif;
+      --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --radius:     10px;
+      --shadow:     0 1px 3px rgba(0,0,0,.08), 0 1px 8px rgba(0,0,0,.04);
+      --shadow-md:  0 4px 12px rgba(0,0,0,.10), 0 1px 3px rgba(0,0,0,.06);
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ─── NAV ──────────────────────────────────────────────────── */
+    nav {
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-name {
+      font-family: var(--font-ui);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── BUTTONS ────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-med);
+      background: var(--white);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--cream);
+      border-color: var(--border-med);
+      box-shadow: var(--shadow);
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn.primary:hover {
+      background: var(--blue-hover);
+      border-color: var(--blue-hover);
+      box-shadow: 0 2px 8px rgba(0,104,217,.3);
+    }
+
+    .btn.danger:hover {
+      background: var(--red-bg);
+      border-color: var(--red-bdr);
+      color: var(--red);
+    }
+
+    .btn.ai {
+      background: var(--purple-bg);
+      border-color: var(--purple-bdr);
+      color: var(--purple);
+      font-weight: 600;
+    }
+
+    .btn.ai:hover {
+      background: #ddd6fe;
+      box-shadow: 0 2px 8px rgba(109,40,217,.2);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 52px 24px 36px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+
+    /* ─── API KEY BANNER ─────────────────────────────────────────── */
+    #apiBanner {
+      max-width: 600px;
+      margin: 0 auto 32px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px 24px;
+    }
+
+    #apiBanner.hidden { display: none; }
+
+    .api-banner-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .api-banner-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .api-banner-sub a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .api-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .api-input-row input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border-med);
+      border-radius: 7px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text);
+      background: var(--cream);
+      outline: none;
+    }
+
+    .api-input-row input:focus {
+      border-color: var(--blue);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(0,104,217,.12);
+    }
+
+    /* ─── SETTINGS MODAL (nav button) ───────────────────────────── */
+    #settingsDrawer {
+      display: none;
+      position: fixed;
+      top: 52px;
+      right: 24px;
+      width: 400px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 18px 20px;
+      z-index: 200;
+    }
+
+    #settingsDrawer.open { display: block; }
+
+    .drawer-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .drawer-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .drawer-sub a { color: var(--blue); }
+
+    /* ─── TOOLBAR ────────────────────────────────────────────────── */
+    .toolbar {
+      max-width: 1280px;
+      margin: 0 auto 16px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border-med);
+      margin: 0 4px;
+    }
+
+    .toolbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ─── STATUS BADGE (pill) ─────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      border: 1px solid transparent;
+    }
+
+    .badge.valid {
+      background: var(--green-bg);
+      border-color: var(--green-bdr);
+      color: var(--green);
+    }
+
+    .badge.invalid {
+      background: var(--red-bg);
+      border-color: var(--red-bdr);
+      color: var(--red);
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ─── WORKSPACE ──────────────────────────────────────────────── */
+    .workspace {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      min-height: 520px;
+    }
+
+    /* ─── EDITOR CARD ─────────────────────────────────────────── */
+    .editor-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 520px;
+    }
+
+    .card-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafaf8;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      color: var(--muted);
+    }
+
+    .card-meta {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ─── EDITOR BODY (line nums + text) ────────────────────────── */
+    .editor-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .line-nums {
+      background: #fafaf8;
+      border-right: 1px solid var(--border);
+      color: #b0a898;
+      padding: 14px 10px 14px 12px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.7;
+      user-select: none;
+      white-space: pre;
+      min-width: 42px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    #inputArea {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--white);
+      resize: none;
+      overflow-y: auto;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    #inputArea::placeholder {
+      color: #b0a898;
+      font-style: italic;
+      white-space: pre-line;
+    }
+
+    /* ─── OUTPUT ─────────────────────────────────────────────────── */
+    .output-scroll {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+    }
+
+    .output-nums {
+      background: #fafaf8;
+      border-right: 1px solid var(--border);
+      color: #b0a898;
+      padding: 14px 10px 14px 12px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.7;
+      user-select: none;
+      white-space: pre;
+      min-width: 42px;
+      flex-shrink: 0;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+
+    #outputArea {
+      flex: 1;
+      padding: 14px 16px;
+    }
+
+    #outputArea pre {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre;
+    }
+
+    #outputArea pre code.hljs {
+      background: transparent;
+      padding: 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* Override hljs background to white */
+    .hljs { background: transparent !important; }
+
+    .output-placeholder {
+      color: #b0a898;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      padding: 14px 16px;
+      font-style: italic;
+      flex: 1;
+    }
+
+    /* ─── AI PANEL (inside output card) ─────────────────────────── */
+    .ai-panel {
+      border-top: 1px solid var(--border);
+      background: #fefcff;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 280px;
+    }
+
+    .ai-panel.hidden { display: none; }
+
+    .ai-panel-header {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f5f3ff;
+      flex-shrink: 0;
+    }
+
+    .ai-panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      color: var(--purple);
+    }
+
+    .ai-close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1;
+      padding: 0 3px;
+    }
+
+    .ai-close-btn:hover { color: var(--text); }
+
+    .ai-body {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .ai-spinner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .spinner-ring {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-med);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .ai-result {
+      padding: 16px;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .ai-result p { margin-bottom: 10px; }
+    .ai-result p:last-child { margin-bottom: 0; }
+
+    .ai-result code {
+      font-family: var(--font-mono);
+      background: var(--cream);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .ai-result pre {
+      background: #f6f8fa;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin: 10px 0 0;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .ai-result pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    .ai-error {
+      padding: 16px;
+      color: var(--red);
+      font-size: 13px;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────── */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: var(--cream-dark);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .site-footer a { color: var(--blue); text-decoration: none; }
+    .site-footer kbd {
+      background: var(--white);
+      border: 1px solid var(--border-med);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    /* ─── TOAST ──────────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: var(--font-ui);
+      font-weight: 500;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.18s, transform 0.18s;
+      pointer-events: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ─── OVERLAY (close drawer on click outside) ────────────────── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+    }
+
+    #overlay.open { display: block; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 800px) {
+      .workspace {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .editor-card { min-height: 340px; }
+      nav { padding: 0 16px; }
+      .hero { padding: 32px 16px 24px; }
+      .toolbar, .workspace { padding: 0 16px 32px; }
+      #settingsDrawer { width: calc(100vw - 32px); right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ NAV ═══════════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">{&nbsp;}</div>
+    <span class="nav-logo-name">SmartJSON</span>
+  </a>
+  <div class="nav-right">
+    <button class="btn" onclick="toggleDrawer()">⚙ API Key</button>
+    <a class="btn primary" href="https://console.groq.com" target="_blank" rel="noopener">Get Groq Key ↗</a>
+  </div>
+</nav>
+
+<!-- Settings drawer (dropdown under nav) -->
+<div id="overlay" onclick="closeDrawer()"></div>
+<div id="settingsDrawer">
+  <div class="drawer-title">Groq API Key</div>
+  <div class="drawer-sub">
+    Get a free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a>. Stored only in your browser.
+  </div>
+  <div class="api-input-row">
+    <input type="password" id="drawerKey" placeholder="gsk_..." autocomplete="off" />
+    <button class="btn primary" onclick="saveKey()">Save</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ HERO ══════════════════════════════════ -->
+<div class="hero">
+  <h1>SmartJSON</h1>
+  <p>AI-powered JSON formatter, validator, and error explainer. Paste any raw, minified, or broken JSON and get instant results.</p>
+
+  <!-- API Key banner (shown until key is set) -->
+  <div id="apiBanner">
+    <div class="api-banner-title">Add your Groq API Key to use AI Explain</div>
+    <div class="api-banner-sub">
+      Free at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> — stored locally, never shared.
+    </div>
+    <div class="api-input-row">
+      <input type="password" id="bannerKey" placeholder="gsk_..." autocomplete="off"
+             onkeydown="if(event.key==='Enter') saveKey()" />
+      <button class="btn primary" onclick="saveKey()">Save Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TOOLBAR ═══════════════════════════════ -->
+<div class="toolbar">
+  <button class="btn primary" onclick="formatAndValidate()">▶ Format &amp; Validate</button>
+  <button class="btn" onclick="minifyJSON()">⊡ Minify</button>
+  <button class="btn danger" onclick="clearAll()">✕ Clear</button>
+  <div class="toolbar-divider"></div>
+  <div id="statusBadge"></div>
+  <div class="toolbar-right">
+    <button class="btn ai" id="explainBtn" onclick="aiExplain()" disabled>✦ AI Explain</button>
+    <button class="btn" id="copyBtn" onclick="copyOutput()" disabled>⎘ Copy</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ WORKSPACE ═════════════════════════════ -->
+<div class="workspace">
+
+  <!-- INPUT CARD -->
+  <div class="editor-card">
+    <div class="card-header">
+      <span class="card-title">Input</span>
+      <span class="card-meta" id="inputMeta">0 chars</span>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="inputNums">1</div>
+      <textarea
+        id="inputArea"
+        spellcheck="false"
+        placeholder='Paste your JSON here…
+
+{ "name": "Alice", "age": 30 }'
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- OUTPUT CARD -->
+  <div class="editor-card">
+    <div class="card-header">
+      <span class="card-title">Output</span>
+      <span class="card-meta" id="outputMeta"></span>
+    </div>
+
+    <div class="editor-body" style="flex:1; overflow:hidden;">
+      <div class="output-scroll" id="outputScroll">
+        <div class="output-nums" id="outputNums"></div>
+        <div id="outputArea">
+          <div class="output-placeholder" id="outputPlaceholder">Formatted output will appear here…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI panel lives inside the output card -->
+    <div class="ai-panel hidden" id="aiPanel">
+      <div class="ai-panel-header">
+        <span class="ai-panel-label">✦ AI Explanation — Groq LLaMA 3.3 70B</span>
+        <button class="ai-close-btn" onclick="closeAI()">×</button>
+      </div>
+      <div class="ai-body" id="aiBody"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════ FOOTER ════════════════════════════════ -->
+<footer class="site-footer">
+  <span>SmartJSON · Powered by <a href="https://groq.com" target="_blank">Groq AI</a> &amp; LLaMA 3.3 70B</span>
+  <span><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to format</span>
+</footer>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════ SCRIPT ════════════════════════════════ -->
+<script>
+  // ── State ──────────────────────────────────────────────────────────
+  let lastError   = null;
+  let lastRawJSON = '';
+  let outputText  = '';
+
+  // ── Init ───────────────────────────────────────────────────────────
+  (function init() {
+    const saved = localStorage.getItem('smartjson_groq_key');
+    if (saved) {
+      document.getElementById('drawerKey').value = saved;
+      document.getElementById('apiBanner').classList.add('hidden');
+    }
+
+    const ta = document.getElementById('inputArea');
+    ta.addEventListener('input', onInput);
+    ta.addEventListener('scroll', () => {
+      document.getElementById('inputNums').scrollTop = ta.scrollTop;
+    });
+    renderInputNums();
+  })();
+
+  // ── Settings ───────────────────────────────────────────────────────
+  function toggleDrawer() {
+    const d = document.getElementById('settingsDrawer');
+    const o = document.getElementById('overlay');
+    const isOpen = d.classList.contains('open');
+    if (isOpen) {
+      d.classList.remove('open');
+      o.classList.remove('open');
+    } else {
+      d.classList.add('open');
+      o.classList.add('open');
+    }
+  }
+
+  function closeDrawer() {
+    document.getElementById('settingsDrawer').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+  }
+
+  function saveKey() {
+    // Collect from whichever input has a value
+    const bannerVal = document.getElementById('bannerKey').value.trim();
+    const drawerVal = document.getElementById('drawerKey').value.trim();
+    const key = bannerVal || drawerVal;
+
+    if (!key) { showToast('Enter a Groq API key first.'); return; }
+
+    localStorage.setItem('smartjson_groq_key', key);
+
+    // Sync both inputs
+    document.getElementById('bannerKey').value  = key;
+    document.getElementById('drawerKey').value  = key;
+
+    // Hide banner, close drawer
+    document.getElementById('apiBanner').classList.add('hidden');
+    closeDrawer();
+    showToast('API key saved!');
+  }
+
+  // ── Input handling ─────────────────────────────────────────────────
+  function onInput() {
+    const ta = document.getElementById('inputArea');
+    document.getElementById('inputMeta').textContent =
+      ta.value.length.toLocaleString() + ' chars';
+    renderInputNums();
+    setBadge('');
+    document.getElementById('explainBtn').disabled = true;
+  }
+
+  function renderInputNums() {
+    const lines = document.getElementById('inputArea').value.split('\n').length;
+    document.getElementById('inputNums').textContent = numStr(Math.max(lines, 1));
+  }
+
+  function numStr(n) {
+    let s = '';
+    for (let i = 1; i <= n; i++) s += i + '\n';
+    return s;
+  }
+
+  // ── Format & Validate ──────────────────────────────────────────────
+  function formatAndValidate() {
+    const raw = document.getElementById('inputArea').value;
+    if (!raw.trim()) { showToast('Nothing to format.'); return; }
+    lastRawJSON = raw;
+
+    try {
+      const parsed    = JSON.parse(raw);
+      const formatted = JSON.stringify(parsed, null, 2);
+      outputText      = formatted;
+      renderOutput(formatted);
+      setBadge('valid');
+      document.getElementById('copyBtn').disabled    = false;
+      document.getElementById('explainBtn').disabled = true;
+      document.getElementById('outputMeta').textContent =
+        formatted.length.toLocaleString() + ' chars';
+      lastError = null;
+      closeAI();
+    } catch (e) {
+      lastError = e.message;
+      setBadge('invalid', e.message);
+      document.getElementById('explainBtn').disabled = false;
+      document.getElementById('copyBtn').disabled    = true;
+      clearOutput();
+    }
+  }
+
+  // ── Minify ─────────────────────────────────────────────────────────
+  function minifyJSON() {
+    const raw = document.getElementById('inputArea').value;
+    if (!raw.trim()) { showToast('Nothing to minify.'); return; }
+    lastRawJSON = raw;
+
+    try {
+      const minified = JSON.stringify(JSON.parse(raw));
+      outputText     = minified;
+      renderOutput(minified);
+      setBadge('valid');
+      document.getElementById('copyBtn').disabled    = false;
+      document.getElementById('explainBtn').disabled = true;
+      document.getElementById('outputMeta').textContent =
+        minified.length.toLocaleString() + ' chars';
+      lastError = null;
+      closeAI();
+    } catch (e) {
+      lastError = e.message;
+      setBadge('invalid', e.message);
+      document.getElementById('explainBtn').disabled = false;
+    }
+  }
+
+  // ── Clear ──────────────────────────────────────────────────────────
+  function clearAll() {
+    document.getElementById('inputArea').value = '';
+    document.getElementById('inputMeta').textContent = '0 chars';
+    document.getElementById('outputMeta').textContent = '';
+    renderInputNums();
+    clearOutput();
+    setBadge('');
+    document.getElementById('explainBtn').disabled = true;
+    document.getElementById('copyBtn').disabled    = true;
+    outputText = ''; lastError = null; lastRawJSON = '';
+    closeAI();
+  }
+
+  // ── Render output ──────────────────────────────────────────────────
+  function renderOutput(text) {
+    const area = document.getElementById('outputArea');
+    const ph   = document.getElementById('outputPlaceholder');
+    if (ph) ph.remove();
+
+    const pre  = document.createElement('pre');
+    const code = document.createElement('code');
+    code.className   = 'language-json';
+    code.textContent = text;
+    pre.appendChild(code);
+    area.innerHTML = '';
+    area.appendChild(pre);
+    hljs.highlightElement(code);
+
+    document.getElementById('outputNums').textContent = numStr(text.split('\n').length);
+  }
+
+  function clearOutput() {
+    document.getElementById('outputArea').innerHTML =
+      '<div class="output-placeholder" id="outputPlaceholder">Formatted output will appear here…</div>';
+    document.getElementById('outputNums').textContent = '';
+    outputText = '';
+  }
+
+  // ── Badge ──────────────────────────────────────────────────────────
+  function setBadge(type, msg) {
+    const el = document.getElementById('statusBadge');
+    if (type === 'valid') {
+      el.innerHTML = '<span class="badge valid">✓ Valid JSON</span>';
+    } else if (type === 'invalid') {
+      const short = msg.length > 60 ? msg.slice(0, 60) + '…' : msg;
+      el.innerHTML =
+        `<span class="badge invalid" title="${esc(msg)}">✕ ${esc(short)}</span>`;
+    } else {
+      el.innerHTML = '';
+    }
+  }
+
+  // ── Copy ───────────────────────────────────────────────────────────
+  async function copyOutput() {
+    if (!outputText) return;
+    try {
+      await navigator.clipboard.writeText(outputText);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = outputText;
+      Object.assign(ta.style, { position: 'fixed', opacity: '0' });
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    showToast('Copied to clipboard!');
+  }
+
+  // ── AI Explain ─────────────────────────────────────────────────────
+  async function aiExplain() {
+    const apiKey =
+      localStorage.getItem('smartjson_groq_key') ||
+      document.getElementById('drawerKey').value.trim();
+
+    if (!apiKey) {
+      showToast('Add your Groq API key first.');
+      toggleDrawer();
+      return;
+    }
+    if (!lastError) { showToast('No error to explain. Validate first.'); return; }
+
+    const panel = document.getElementById('aiPanel');
+    const body  = document.getElementById('aiBody');
+    panel.classList.remove('hidden');
+    body.innerHTML = `
+      <div class="ai-spinner">
+        <div class="spinner-ring"></div>
+        <span>Analyzing with Groq AI…</span>
+      </div>`;
+    document.getElementById('explainBtn').disabled = true;
+
+    const prompt =
+      `The following JSON has an error.\n\nError message: ${lastError}\n\n` +
+      `JSON content:\n${lastRawJSON}\n\n` +
+      `Explain in 2-3 sentences what is wrong, then show the corrected JSON in a fenced code block.`;
+
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model:       'llama-3.3-70b-versatile',
+          messages:    [{ role: 'user', content: prompt }],
+          max_tokens:  1024,
+          temperature: 0.2
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || 'No response.';
+      body.innerHTML = `<div class="ai-result">${renderMd(text)}</div>`;
+
+    } catch (e) {
+      body.innerHTML = `<div class="ai-error">⚠ ${esc(e.message)}</div>`;
+    } finally {
+      document.getElementById('explainBtn').disabled = false;
+    }
+  }
+
+  function closeAI() {
+    document.getElementById('aiPanel').classList.add('hidden');
+    document.getElementById('aiBody').innerHTML = '';
+  }
+
+  // ── Markdown → HTML (for AI response) ─────────────────────────────
+  function renderMd(raw) {
+    const parts = raw.split(/(```[\s\S]*?```)/g);
+    let html = '';
+    for (const part of parts) {
+      if (part.startsWith('```')) {
+        const lines = part.split('\n');
+        const lang  = lines[0].replace('```', '').trim();
+        const code  = lines.slice(1, -1).join('\n');
+        let hi = esc(code);
+        try {
+          hi = (lang && hljs.getLanguage(lang))
+            ? hljs.highlight(code, { language: lang }).value
+            : hljs.highlightAuto(code).value;
+        } catch (_) {}
+        html += `<pre><code class="hljs">${hi}</code></pre>`;
+      } else {
+        let p = esc(part);
+        p = p.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+        p = p.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        p = p.replace(/\n{2,}/g, '</p><p>');
+        p = p.replace(/\n/g, '<br>');
+        if (p.trim()) html += `<p>${p}</p>`;
+      }
+    }
+    return html;
+  }
+
+  // ── Utility ────────────────────────────────────────────────────────
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  // ── Keyboard shortcut ──────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      formatAndValidate();
+    }
+    if (e.key === 'Escape') closeDrawer();
+  });
+</script>
+</body>
+</html>
